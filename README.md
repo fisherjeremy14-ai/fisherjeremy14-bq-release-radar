@@ -14,7 +14,7 @@ A modern, high-performance developer dashboard built with **Python Flask** and *
 *   **Granular Parsing & Organization:** Splits multi-entry daily release notes by type headings (`Feature`, `Announcement`, `Issue`, `Deprecation`) into clean, independent cards.
 *   **In-Memory Caching:** Includes a 5-minute TTL caching system to ensure extremely fast local responses while avoiding feed-throttling from Google's servers.
 *   **Forced Sync Override:** Allows a manual cache bypass utilizing an animated loader spinner during active fetch operations.
-*   **Premium Dark UI:** Sleek, visual developer-focused dashboard with category-specific colored badges, responsive grid layouts, and glowing focus states.
+*   **Adaptive Theme System:** Features a toggle switch in the header that overrides CSS root variables to transition between **Dark** and **Light** themes seamlessly, with persistence saved in the browser's `localStorage`.
 *   **X/Twitter Composer Modal:** Custom modal composer that accurately handles character counting based on X's standard URL rules (treating all links as exactly 23 characters), provides hashtag toggles, and showcases a live Twitter card mock layout.
 *   **Utility Operations:** Supports copy-to-clipboard actions directly on cards (with success state animations) and instant CSV generation/downloads for currently filtered search results on the client side.
 
