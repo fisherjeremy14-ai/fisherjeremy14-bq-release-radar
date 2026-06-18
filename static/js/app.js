@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeHashtags = ['#BigQuery', '#GoogleCloud'];
 
     // DOM Elements
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const themeIconDark = document.getElementById('theme-icon-dark');
+    const themeIconLight = document.getElementById('theme-icon-light');
     const refreshBtn = document.getElementById('refresh-btn');
     const refreshIcon = document.getElementById('refresh-icon');
     const exportBtn = document.getElementById('export-btn');
@@ -480,6 +483,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================================================
+    // Theme Management
+    // ==========================================================================
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+    }
+
+    function setTheme(theme) {
+        if (theme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeIconDark.style.display = 'none';
+            themeIconLight.style.display = 'block';
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            themeIconDark.style.display = 'block';
+            themeIconLight.style.display = 'none';
+        }
+        localStorage.setItem('theme', theme);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+    }
+
+    // ==========================================================================
     // Event Listeners
     // ==========================================================================
     
@@ -564,6 +594,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const tag = pill.dataset.tag;
         toggleHashtagInTextarea(tag);
     });
+
+    // Toggle theme
+    themeToggleBtn.addEventListener('click', toggleTheme);
+
+    // Initialize theme
+    initTheme();
 
     // Load initial data
     loadReleases();
