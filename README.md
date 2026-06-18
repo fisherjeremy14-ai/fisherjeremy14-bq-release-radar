@@ -16,6 +16,7 @@ A modern, high-performance developer dashboard built with **Python Flask** and *
 *   **Forced Sync Override:** Allows a manual cache bypass utilizing an animated loader spinner during active fetch operations.
 *   **Premium Dark UI:** Sleek, visual developer-focused dashboard with category-specific colored badges, responsive grid layouts, and glowing focus states.
 *   **X/Twitter Composer Modal:** Custom modal composer that accurately handles character counting based on X's standard URL rules (treating all links as exactly 23 characters), provides hashtag toggles, and showcases a live Twitter card mock layout.
+*   **Utility Operations:** Supports copy-to-clipboard actions directly on cards (with success state animations) and instant CSV generation/downloads for currently filtered search results on the client side.
 
 ---
 
