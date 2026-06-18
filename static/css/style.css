@@ -638,6 +638,34 @@ h1, h2, h3, h4 {
     box-shadow: 0 2px 8px rgba(29, 155, 240, 0.3);
 }
 
+.btn-card-copy {
+    background-color: rgba(148, 163, 184, 0.1);
+    color: var(--text-secondary);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all var(--transition-fast);
+}
+
+.btn-card-copy:hover {
+    background-color: rgba(56, 189, 248, 0.15);
+    color: var(--color-feature);
+    border-color: rgba(56, 189, 248, 0.4);
+    box-shadow: 0 2px 8px rgba(56, 189, 248, 0.15);
+}
+
+.btn-card-copy.copied {
+    background-color: var(--color-update-bg);
+    color: var(--color-update);
+    border-color: var(--color-update-border);
+}
+
 /* Selection check indicator */
 .card-select-indicator {
     display: flex;

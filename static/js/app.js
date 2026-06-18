@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const refreshBtn = document.getElementById('refresh-btn');
     const refreshIcon = document.getElementById('refresh-icon');
+    const exportBtn = document.getElementById('export-btn');
     const lastUpdatedText = document.getElementById('last-updated-text');
     
     const searchInput = document.getElementById('search-input');
@@ -204,6 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="card-header-row">
                         <span class="badge-type ${badgeClass}">${item.type}</span>
                         <div class="card-actions">
+                            <button class="btn-card-copy" data-id="${item.id}" title="Copy plain text to clipboard">
+                                <i class="fa-regular fa-copy"></i> Copy
+                            </button>
                             <button class="btn-card-tweet" data-id="${item.id}" title="Tweet about this update">
                                 <i class="fa-brands fa-x-twitter"></i> Tweet
                             </button>
@@ -224,8 +228,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
                     
-                    // If user clicked the tweet button inside card, don't change selection, just open composer
-                    if (e.target.closest('.btn-card-tweet')) {
+                    // If user clicked action buttons inside card, don't change selection
+                    if (e.target.closest('.btn-card-tweet') || e.target.closest('.btn-card-copy')) {
                         return;
                     }
                     
@@ -236,6 +240,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cardTweetBtn = card.querySelector('.btn-card-tweet');
                 cardTweetBtn.addEventListener('click', () => {
                     openTweetComposer(item, day.date);
+                });
+
+                // Hook Copy button
+                const cardCopyBtn = card.querySelector('.btn-card-copy');
+                cardCopyBtn.addEventListener('click', () => {
+                    copyToClipboard(item.raw_text, cardCopyBtn);
                 });
 
                 dateItemsContainer.appendChild(card);
@@ -269,6 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
         errorState.style.display = state === 'error' ? 'flex' : 'none';
         emptyState.style.display = state === 'empty' ? 'flex' : 'none';
         timelineContainer.style.display = state === 'content' ? 'flex' : 'none';
+        
+        // Toggle Export CSV Button visibility depending on content loading success
+        if (exportBtn) {
+            exportBtn.style.display = state === 'content' ? 'inline-flex' : 'none';
+        }
     }
 
     // ==========================================================================
@@ -418,6 +433,52 @@ document.addEventListener('DOMContentLoaded', () => {
         closeTweetComposer();
     }
 
+    function copyToClipboard(text, button) {
+        navigator.clipboard.writeText(text).then(() => {
+            button.classList.add('copied');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+            
+            setTimeout(() => {
+                button.classList.remove('copied');
+                button.innerHTML = originalHTML;
+            }, 2000);
+        }).catch(err => {
+            console.error('Clipboard copy failed: ', err);
+        });
+    }
+
+    function exportToCSV() {
+        const filteredData = getFilteredData();
+        if (filteredData.length === 0) return;
+        
+        const headers = ["Date", "Category", "Description", "Link"];
+        const rows = [headers];
+        
+        filteredData.forEach(day => {
+            day.items.forEach(item => {
+                const dateVal = `"${day.date.replace(/"/g, '""')}"`;
+                const categoryVal = `"${item.type.replace(/"/g, '""')}"`;
+                const descVal = `"${item.raw_text.replace(/"/g, '""')}"`;
+                const linkVal = `"${item.link.replace(/"/g, '""')}"`;
+                
+                rows.push([dateVal, categoryVal, descVal, linkVal]);
+            });
+        });
+        
+        const csvString = rows.map(e => e.join(",")).join("\n");
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `bigquery_release_notes_${currentFilter}_export.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
     // ==========================================================================
     // Event Listeners
     // ==========================================================================
@@ -425,6 +486,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Refresh feed
     refreshBtn.addEventListener('click', () => loadReleases(true));
     retryBtn.addEventListener('click', () => loadReleases(true));
+    
+    // Export CSV
+    exportBtn.addEventListener('click', exportToCSV);
     
     // Live Search input
     searchInput.addEventListener('input', (e) => {
